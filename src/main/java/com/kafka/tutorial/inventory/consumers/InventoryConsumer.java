@@ -11,10 +11,7 @@ public class InventoryConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(InventoryConsumer.class);
 
-    @KafkaListener(
-            topics="orders",
-            groupId = "inventory-group"
-    )
+    @KafkaListener(topics = "orders")
     public void consume(OrderCreatedEvent orderCreatedEvent) {
         log.info("Received order: {}", orderCreatedEvent.orderId());
     }
