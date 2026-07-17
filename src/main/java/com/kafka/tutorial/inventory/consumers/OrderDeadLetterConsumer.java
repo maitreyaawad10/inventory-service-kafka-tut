@@ -10,21 +10,27 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class OrderDeadLetterConsumer {
-    @KafkaListener(topics = "orders.DLT")
+    @KafkaListener(topics = "orders-dlt")
     public void consume(OrderCreatedEvent orderCreatedEvent,
                         @Header(KafkaHeaders.DLT_ORIGINAL_TOPIC) String originalTopic,
-                        @Header(KafkaHeaders.DLT_ORIGINAL_PARTITION) String originalPartition,
-                        @Header(KafkaHeaders.DLT_ORIGINAL_OFFSET) long originalOffset) {
+                        @Header(KafkaHeaders.DLT_ORIGINAL_PARTITION) int originalPartition,
+                        @Header(KafkaHeaders.DLT_ORIGINAL_OFFSET) long originalOffset,
+                        @Header(KafkaHeaders.DLT_EXCEPTION_FQCN) String exceptionClass,
+                        @Header(KafkaHeaders.DLT_EXCEPTION_MESSAGE) String exceptionMessage) {
         log.error("""
             Failed Event
-            Topic      : {}
-            Partition  : {}
-            Offset      : {}
+            Original Topic      : {}
+            Original Partition  : {}
+            Original Offset      : {}
+            Original Exception  : {}
+            Original Exception message  : {}
             Event       : {}
             """,
                 originalTopic,
                 originalPartition,
                 originalOffset,
+                exceptionClass,
+                exceptionMessage,
                 orderCreatedEvent);
     }
 }

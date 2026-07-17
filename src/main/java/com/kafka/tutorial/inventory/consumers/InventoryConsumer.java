@@ -11,6 +11,10 @@ public class InventoryConsumer {
 
     @KafkaListener(topics = "orders")
     public void consume(OrderCreatedEvent orderCreatedEvent) {
+        if (orderCreatedEvent.customerId() == null)
+            throw new IllegalArgumentException("Customer Id is null");
+        if (orderCreatedEvent.totalAmount() == null)
+            throw new IllegalStateException("Total amount is null");
         log.info("Received order: {}", orderCreatedEvent.orderId());
     }
 }
